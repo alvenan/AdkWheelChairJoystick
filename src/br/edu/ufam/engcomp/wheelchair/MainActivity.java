@@ -12,6 +12,7 @@ public class MainActivity extends Activity {
 
 	private RelativeLayout joystickLayout;
 	private JoyStickComponent joystick;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +21,8 @@ public class MainActivity extends Activity {
 
 		joystickLayout = (RelativeLayout) findViewById(R.id.joystick_layout);
 		joystick = new JoyStickComponent(getApplicationContext(),
-				joystickLayout, R.drawable.image_button);
+				joystickLayout, R.drawable.joystick_button);
+		joystick.drawStick();
 		setJoystickParams(joystick);
 
 		joystickLayout.setOnTouchListener(new OnTouchListener() {
@@ -34,7 +36,6 @@ public class MainActivity extends Activity {
 
 	public void setJoystickParams(JoyStickComponent js) {
 		js.setStickSize(150, 150);
-		js.setLayoutSize(500, 500);
 		js.setLayoutAlpha(150);
 		js.setStickAlpha(100);
 		js.setOffset(90);

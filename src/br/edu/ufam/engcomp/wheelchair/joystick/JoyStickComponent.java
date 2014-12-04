@@ -5,21 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import br.edu.ufam.engcomp.wheelchair.utils.Constants;
 
 public class JoyStickComponent {
-	public static final int STICK_NONE = 0;
-	public static final int STICK_UP = 1;
-	public static final int STICK_UPRIGHT = 2;
-	public static final int STICK_RIGHT = 3;
-	public static final int STICK_DOWNRIGHT = 4;
-	public static final int STICK_DOWN = 5;
-	public static final int STICK_DOWNLEFT = 6;
-	public static final int STICK_LEFT = 7;
-	public static final int STICK_UPLEFT = 8;
 
 	private int STICK_ALPHA = 200;
 	private int LAYOUT_ALPHA = 200;
@@ -29,7 +22,6 @@ public class JoyStickComponent {
 	private ViewGroup mLayout;
 	private LayoutParams params;
 	private int stick_width, stick_height;
-	private int layout_width, layout_height;
 
 	private int position_x = 0, position_y = 0, min_distance = 0;
 	private float distance = 0, angle = 0;
@@ -42,20 +34,22 @@ public class JoyStickComponent {
 
 	public JoyStickComponent(Context context, ViewGroup layout, int stick_res_id) {
 		mContext = context;
+		mLayout = layout;
 
 		stick = BitmapFactory.decodeResource(mContext.getResources(),
 				stick_res_id);
 
 		stick_width = stick.getWidth();
 		stick_height = stick.getHeight();
+	}
 
+	public void drawStick() {
 		draw = new DrawCanvas(mContext);
 		paint = new Paint();
-		mLayout = layout;
 
-		layout_width = mLayout.getWidth();
-		layout_height = mLayout.getHeight();
 		params = mLayout.getLayoutParams();
+
+		Log.i("###", "W/h - " + stick_width + " / " + stick_height);
 
 		draw.position(250, 250);
 		draw();
@@ -113,8 +107,8 @@ public class JoyStickComponent {
 
 	public int getX1() {
 		if (distance > min_distance && touch_state) {
-			if (distance >= 200) {
-				distance = 200;
+			if (distance >= Constants.BORDER) {
+				distance = Constants.BORDER;
 			}
 			return (int) (distance * (Math.cos(Math.toRadians(getAngle()))));
 		}
@@ -130,8 +124,8 @@ public class JoyStickComponent {
 
 	public int getY1() {
 		if (distance > min_distance && touch_state) {
-			if (distance >= 200) {
-				distance = 200;
+			if (distance >= Constants.BORDER) {
+				distance = Constants.BORDER;
 			}
 			return (int) (distance * (Math.sin(Math.toRadians(getAngle()))));
 		}
@@ -163,24 +157,24 @@ public class JoyStickComponent {
 	public int get8Direction() {
 		if (distance > min_distance && touch_state) {
 			if (angle >= 247.5 && angle < 292.5) {
-				return STICK_UP;
+				return Constants.STICK_UP;
 			} else if (angle >= 292.5 && angle < 337.5) {
-				return STICK_UPRIGHT;
+				return Constants.STICK_UPRIGHT;
 			} else if (angle >= 337.5 || angle < 22.5) {
-				return STICK_RIGHT;
+				return Constants.STICK_RIGHT;
 			} else if (angle >= 22.5 && angle < 67.5) {
-				return STICK_DOWNRIGHT;
+				return Constants.STICK_DOWNRIGHT;
 			} else if (angle >= 67.5 && angle < 112.5) {
-				return STICK_DOWN;
+				return Constants.STICK_DOWN;
 			} else if (angle >= 112.5 && angle < 157.5) {
-				return STICK_DOWNLEFT;
+				return Constants.STICK_DOWNLEFT;
 			} else if (angle >= 157.5 && angle < 202.5) {
-				return STICK_LEFT;
+				return Constants.STICK_LEFT;
 			} else if (angle >= 202.5 && angle < 247.5) {
-				return STICK_UPLEFT;
+				return Constants.STICK_UPLEFT;
 			}
 		} else if (distance <= min_distance && touch_state) {
-			return STICK_NONE;
+			return Constants.STICK_NONE;
 		}
 		return 0;
 	}
@@ -188,16 +182,16 @@ public class JoyStickComponent {
 	public int get4Direction() {
 		if (distance > min_distance && touch_state) {
 			if (angle >= 225 && angle < 315) {
-				return STICK_UP;
+				return Constants.STICK_UP;
 			} else if (angle >= 315 || angle < 45) {
-				return STICK_RIGHT;
+				return Constants.STICK_RIGHT;
 			} else if (angle >= 45 && angle < 135) {
-				return STICK_DOWN;
+				return Constants.STICK_DOWN;
 			} else if (angle >= 135 && angle < 225) {
-				return STICK_LEFT;
+				return Constants.STICK_LEFT;
 			}
 		} else if (distance <= min_distance && touch_state) {
-			return STICK_NONE;
+			return Constants.STICK_NONE;
 		}
 		return 0;
 	}
