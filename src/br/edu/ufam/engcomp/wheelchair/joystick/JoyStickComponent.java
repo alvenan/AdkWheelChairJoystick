@@ -103,8 +103,8 @@ public class JoyStickComponent {
 
 	public int getX1() {
 		if (distance > min_distance && touch_state) {
-			if (distance >= Constants.BORDER) {
-				distance = Constants.BORDER;
+			if (distance >= Constants.LAYOUT_BORDER) {
+				distance = Constants.LAYOUT_BORDER;
 			}
 			return (int) (distance * (Math.cos(Math.toRadians(getAngle()))));
 		}
@@ -120,8 +120,8 @@ public class JoyStickComponent {
 
 	public int getY1() {
 		if (distance > min_distance && touch_state) {
-			if (distance >= Constants.BORDER) {
-				distance = Constants.BORDER;
+			if (distance >= Constants.LAYOUT_BORDER) {
+				distance = Constants.LAYOUT_BORDER;
 			}
 			return (int) (distance * (Math.sin(Math.toRadians(getAngle()))));
 		}
