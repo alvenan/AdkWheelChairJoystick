@@ -14,17 +14,16 @@ import br.edu.ufam.engcomp.wheelchair.utils.Constants;
 
 public class JoyStickComponent {
 
-	private int STICK_ALPHA = 200;
-	private int LAYOUT_ALPHA = 200;
-	private int OFFSET = 0;
+	private int stickAlpha;
+	private int layoutAlpha;
+	private int OFFSET;
 
-	private Context mContext;
 	private ViewGroup mLayout;
 	private LayoutParams layoutParams;
 	private int stick_width, stick_height;
 
-	private int position_x = 0, position_y = 0, min_distance = 0;
-	private float distance = 0, angle = 0;
+	private int position_x, position_y, min_distance;
+	private float distance, angle;
 
 	private DrawCanvas draw;
 	private Paint paint;
@@ -33,10 +32,9 @@ public class JoyStickComponent {
 	private boolean touch_state = false;
 
 	public JoyStickComponent(Context context, ViewGroup layout, int stick_res_id) {
-		mContext = context;
 		mLayout = layout;
 
-		stick = BitmapFactory.decodeResource(mContext.getResources(),
+		stick = BitmapFactory.decodeResource(context.getResources(),
 				stick_res_id);
 
 		layoutParams = mLayout.getLayoutParams();
@@ -44,14 +42,11 @@ public class JoyStickComponent {
 		stick_width = stick.getWidth();
 		stick_height = stick.getHeight();
 
-		draw = new DrawCanvas(mContext);
+		draw = new DrawCanvas(context);
 		paint = new Paint();
 	}
 
 	public void drawStick() {
-
-		Log.i("###", "W/h - " + stick_width + " / " + stick_height);
-
 		draw.position(layoutParams.width / 2, layoutParams.height / 2);
 		draw();
 	}
@@ -206,21 +201,21 @@ public class JoyStickComponent {
 	}
 
 	public void setStickAlpha(int alpha) {
-		STICK_ALPHA = alpha;
+		stickAlpha = alpha;
 		paint.setAlpha(alpha);
 	}
 
 	public int getStickAlpha() {
-		return STICK_ALPHA;
+		return stickAlpha;
 	}
 
 	public void setLayoutAlpha(int alpha) {
-		LAYOUT_ALPHA = alpha;
+		layoutAlpha = alpha;
 		mLayout.getBackground().setAlpha(alpha);
 	}
 
 	public int getLayoutAlpha() {
-		return LAYOUT_ALPHA;
+		return layoutAlpha;
 	}
 
 	public void setStickSize(int width, int height) {
@@ -283,8 +278,8 @@ public class JoyStickComponent {
 	private class DrawCanvas extends View {
 		float x, y;
 
-		private DrawCanvas(Context mContext) {
-			super(mContext);
+		private DrawCanvas(Context context) {
+			super(context);
 		}
 
 		public void onDraw(Canvas canvas) {
@@ -295,5 +290,13 @@ public class JoyStickComponent {
 			x = pos_x - (stick_width / 2);
 			y = pos_y - (stick_height / 2);
 		}
+	}
+
+	public void setJoystickParams() {
+		this.setStickSize(Constants.STICK_WIDTH, Constants.STICK_HEIGHT);
+		this.setLayoutAlpha(Constants.LAYOUT_ALPHA);
+		this.setStickAlpha(Constants.STICK_ALPHA);
+		this.setOffset(Constants.OFFSET);
+		this.setMinimumDistance(Constants.MIN_DISTANCE);
 	}
 }
