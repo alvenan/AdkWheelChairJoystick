@@ -46,4 +46,10 @@ public class MainActivity extends Activity {
 		joystick.drawStick(event);
 		return true;
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		joystick.drawStick();
+	}
 }

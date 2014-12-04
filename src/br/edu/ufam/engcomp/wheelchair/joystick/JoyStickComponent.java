@@ -20,7 +20,7 @@ public class JoyStickComponent {
 
 	private Context mContext;
 	private ViewGroup mLayout;
-	private LayoutParams params;
+	private LayoutParams layoutParams;
 	private int stick_width, stick_height;
 
 	private int position_x = 0, position_y = 0, min_distance = 0;
@@ -39,53 +39,54 @@ public class JoyStickComponent {
 		stick = BitmapFactory.decodeResource(mContext.getResources(),
 				stick_res_id);
 
+		layoutParams = mLayout.getLayoutParams();
+
 		stick_width = stick.getWidth();
 		stick_height = stick.getHeight();
+
+		draw = new DrawCanvas(mContext);
+		paint = new Paint();
 	}
 
 	public void drawStick() {
-		draw = new DrawCanvas(mContext);
-		paint = new Paint();
-
-		params = mLayout.getLayoutParams();
 
 		Log.i("###", "W/h - " + stick_width + " / " + stick_height);
 
-		draw.position(250, 250);
+		draw.position(layoutParams.width / 2, layoutParams.height / 2);
 		draw();
 	}
 
 	public void drawStick(MotionEvent event) {
-		position_x = (int) (event.getX() - (params.width / 2));
-		position_y = (int) (event.getY() - (params.height / 2));
+		position_x = (int) (event.getX() - (layoutParams.width / 2));
+		position_y = (int) (event.getY() - (layoutParams.height / 2));
 		distance = (float) Math.sqrt(Math.pow(position_x, 2)
 				+ Math.pow(position_y, 2));
 		angle = (float) cal_angle(position_x, position_y);
 
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			if (distance <= (params.width / 2) - OFFSET) {
+			if (distance <= (layoutParams.width / 2) - OFFSET) {
 				draw.position(event.getX(), event.getY());
 				draw();
 				touch_state = true;
 			}
 		} else if (event.getAction() == MotionEvent.ACTION_MOVE && touch_state) {
-			if (distance <= (params.width / 2) - OFFSET) {
+			if (distance <= (layoutParams.width / 2) - OFFSET) {
 				draw.position(event.getX(), event.getY());
 				draw();
-			} else if (distance > (params.width / 2) - OFFSET) {
+			} else if (distance > (layoutParams.width / 2) - OFFSET) {
 				float x = (float) (Math.cos(Math.toRadians(cal_angle(
-						position_x, position_y))) * ((params.width / 2) - OFFSET));
+						position_x, position_y))) * ((layoutParams.width / 2) - OFFSET));
 				float y = (float) (Math.sin(Math.toRadians(cal_angle(
-						position_x, position_y))) * ((params.height / 2) - OFFSET));
-				x += (params.width / 2);
-				y += (params.height / 2);
+						position_x, position_y))) * ((layoutParams.height / 2) - OFFSET));
+				x += (layoutParams.width / 2);
+				y += (layoutParams.height / 2);
 				draw.position(x, y);
 				draw();
 			} else {
 				mLayout.removeView(draw);
 			}
 		} else if (event.getAction() == MotionEvent.ACTION_UP) {
-			draw.position(250, 250);
+			draw.position(layoutParams.width / 2, layoutParams.height / 2);
 			draw();
 			touch_state = false;
 		}
@@ -247,16 +248,16 @@ public class JoyStickComponent {
 	}
 
 	public void setLayoutSize(int width, int height) {
-		params.width = width;
-		params.height = height;
+		layoutParams.width = width;
+		layoutParams.height = height;
 	}
 
 	public int getLayoutWidth() {
-		return params.width;
+		return layoutParams.width;
 	}
 
 	public int getLayoutHeight() {
-		return params.height;
+		return layoutParams.height;
 	}
 
 	private double cal_angle(float x, float y) {
