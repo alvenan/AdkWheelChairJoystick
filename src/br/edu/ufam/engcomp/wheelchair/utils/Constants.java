@@ -19,6 +19,12 @@ public class Constants {
 	public static final int STICK_WIDTH = 150;
 	public static final int STICK_HEIGHT = 150;
 	
+    public static final int CENTRAL_VALUE = 152;
+    public static final int UP_VALUE = 98/100;
+    public static final int DOWN_VALUE = 9/100;
+    public static final int RIGHT_VALUE = 9/100;
+    public static final int LEFT_VALUE = 98/100;
+	
 	public static final int RQS_USB_PERMISSION = 0;
 	public static final String ACTION_USB_PERMISSION = "arduino-er.usb_permission";
 

@@ -1,17 +1,20 @@
 package br.edu.ufam.engcomp.wheelchair.joystick;
 
+import static java.lang.System.out;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path.Direction;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import br.edu.ufam.engcomp.wheelchair.utils.Constants;
+import br.edu.ufam.engcomp.wheelchair.utils.EnumDirection;
 
-public class JoyStickComponent {
+public class JoystickComponent {
 
 	private int mStickAlpha;
 	private int mLayoutAlpha;
@@ -30,7 +33,7 @@ public class JoyStickComponent {
 
 	private boolean mTouchState = false;
 
-	public JoyStickComponent(Context context, ViewGroup layout, int stick_res_id) {
+	public JoystickComponent(Context context, ViewGroup layout, int stick_res_id) {
 		mLayout = layout;
 
 		mStick = BitmapFactory.decodeResource(context.getResources(),
@@ -304,43 +307,45 @@ public class JoyStickComponent {
 		return "CENTER - 0";
 	}
 
-	public String getJoystickPosition(MotionEvent event) {
+	private String getJoystickPosition(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN
 				|| event.getAction() == MotionEvent.ACTION_MOVE) {
 			int direction = this.get8Direction();
 			if (direction == Constants.STICK_UP) {
-				if (this.getY() <= -200) {
+				if (this.getY() <= -(Constants.LAYOUT_BORDER)) {
 					return "UP - 100%";
 				} else {
 					return "UP - " + (-this.getY() / 2) + "%";
 				}
 			}
 			if (direction == Constants.STICK_RIGHT) {
-				if (this.getX() >= 200) {
+				if (this.getX() >= Constants.LAYOUT_BORDER) {
 					return "RIGHT - 100%";
 				} else {
 					return "RIGHT - " + this.getX() / 2 + "%";
 				}
 			}
 			if (direction == Constants.STICK_DOWN) {
-				if (this.getY() >= 200) {
+				if (this.getY() >= Constants.LAYOUT_BORDER) {
 					return "DOWN - 100%";
 				} else {
 					return "DOWN - " + this.getY() / 2 + "%";
 				}
 			}
 			if (direction == Constants.STICK_LEFT) {
-				if (this.getX() <= -200) {
+				if (this.getX() <= -(Constants.LAYOUT_BORDER)) {
 					return "LEFT - 100%";
 				} else {
 					return "LEFT - " + (-this.getX() / 2) + "%";
 				}
 			}
 			if (direction == Constants.STICK_UPRIGHT) {
-				if ((this.getY() > -200) && (this.getX1() >= 200)) {
+				if ((this.getY() > -(Constants.LAYOUT_BORDER))
+						&& (this.getX1() >= Constants.LAYOUT_BORDER)) {
 					return "UP - " + (-this.getY1() / 2) + "% - RIGHT - 100%";
 				}
-				if ((this.getY1() <= -200) && (this.getX1() < 200)) {
+				if ((this.getY1() <= -(Constants.LAYOUT_BORDER))
+						&& (this.getX1() < Constants.LAYOUT_BORDER)) {
 					return "UP - 100%" + " - RIGHT - " + this.getX1() / 2 + "%";
 				} else {
 					return "UP - " + (-this.getY1() / 2) + "% - " + "RIGHT - "
@@ -349,10 +354,12 @@ public class JoyStickComponent {
 				}
 			}
 			if (direction == Constants.STICK_DOWNRIGHT) {
-				if ((this.getY1() < 200) && (this.getX1() >= 200)) {
+				if ((this.getY1() < Constants.LAYOUT_BORDER)
+						&& (this.getX1() >= Constants.LAYOUT_BORDER)) {
 					return "DOWN - " + (this.getY1() / 2) + "% - RIGHT - 100%";
 				}
-				if ((this.getY1() >= 200) && (this.getX1() < 200)) {
+				if ((this.getY1() >= Constants.LAYOUT_BORDER)
+						&& (this.getX1() < Constants.LAYOUT_BORDER)) {
 					return "DOWN - 100%" + " - RIGHT - " + this.getX1() / 2
 							+ "%";
 				} else {
@@ -361,10 +368,12 @@ public class JoyStickComponent {
 				}
 			}
 			if (direction == Constants.STICK_DOWNLEFT) {
-				if ((this.getY1() < 200) && (this.getX1() <= -200)) {
+				if ((this.getY1() < Constants.LAYOUT_BORDER)
+						&& (this.getX1() <= -(Constants.LAYOUT_BORDER))) {
 					return "DOWN - " + this.getY1() / 2 + "% - LEFT - 100%";
 				}
-				if ((this.getY1() >= 200) && (this.getX1() > -200)) {
+				if ((this.getY1() >= Constants.LAYOUT_BORDER)
+						&& (this.getX1() > -(Constants.LAYOUT_BORDER))) {
 					return "DOWN - 100% - LEFT - " + (-this.getX1() / 2) + "%";
 				} else {
 					return "DOWN - " + this.getY1() / 2 + "% - " + "LEFT - "
@@ -372,10 +381,12 @@ public class JoyStickComponent {
 				}
 			}
 			if (direction == Constants.STICK_UPLEFT) {
-				if ((this.getY1() > -200) && (this.getX1() <= -200)) {
+				if ((this.getY1() > -(Constants.LAYOUT_BORDER))
+						&& (this.getX1() <= -(Constants.LAYOUT_BORDER))) {
 					return "UP - " + (-this.getY1() / 2) + "% - LEFT - 100%";
 				}
-				if ((this.getY1() <= -200) && (this.getX1() > -200)) {
+				if ((this.getY1() <= -(Constants.LAYOUT_BORDER))
+						&& (this.getX1() > -(Constants.LAYOUT_BORDER))) {
 					return "UP - 100%" + " - LEFT - " + (-this.getX1() / 2)
 							+ "%";
 				} else {
@@ -388,6 +399,93 @@ public class JoyStickComponent {
 			}
 		}
 		return getJoystickPosition();
+	}
 
+	public String positionToByte(MotionEvent event) {
+		String joystickPosition = getJoystickPosition(event);
+
+		if ((joystickPosition != null) && (!joystickPosition.isEmpty())) {
+			joystickPosition = joystickPosition.trim();
+			String[] data = joystickPosition.split("-");
+			byte command1 = 0x20;
+			byte command2 = 0x20;
+			int power1 = 0, power2 = 0, dacValue1 = 152, dacValue2 = 152;
+			EnumDirection direction1 = EnumDirection.valueOf(data[0].trim());
+
+			power1 = Integer.parseInt(data[1].replace('%', ' ').trim());
+			switch (direction1) {
+			case UP:
+				command1 = 0x66; // 'f'
+				dacValue1 = Constants.CENTRAL_VALUE
+						+ (power1 * Constants.UP_VALUE);
+				break;
+			case DOWN:
+				command1 = 0x62; // 'b'
+				dacValue1 = Constants.CENTRAL_VALUE
+						+ (-power1 * Constants.DOWN_VALUE);
+				break;
+			case LEFT:
+				command1 = 0x6C; // 'l'
+				dacValue1 = Constants.CENTRAL_VALUE
+						+ (power1 * Constants.LEFT_VALUE);
+				break;
+			case RIGHT:
+				command1 = 0x72; // 'r'
+				dacValue1 = Constants.CENTRAL_VALUE
+						+ (-power1 * Constants.RIGHT_VALUE);
+				break;
+			case CENTER:
+			default:
+				command1 = 0x30; // '0'
+				dacValue1 = Constants.CENTRAL_VALUE;
+			}
+			if (data.length > 2) {
+				EnumDirection direction2 = EnumDirection
+						.valueOf(data[2].trim());
+				power2 = Integer.parseInt(data[3].replace('%', ' ').trim());
+				switch (direction2) {
+				case UP:
+					command2 = 0x66; // 'f'
+					dacValue2 = Constants.CENTRAL_VALUE
+							+ (power2 * Constants.UP_VALUE);
+					break;
+				case DOWN:
+					command2 = 0x62; // 'b'
+					dacValue2 = Constants.CENTRAL_VALUE
+							+ (-power2 * Constants.DOWN_VALUE);
+					break;
+				case LEFT:
+					command2 = 0x6C; // 'l'
+					dacValue2 = Constants.CENTRAL_VALUE
+							+ (power2 * Constants.LEFT_VALUE);
+					break;
+				case RIGHT:
+					command2 = 0x72; // 'r'
+					dacValue2 = Constants.CENTRAL_VALUE
+							+ (-power2 * Constants.RIGHT_VALUE);
+					break;
+				case CENTER:
+				default:
+					command2 = 0x30; // '0'
+					dacValue2 = Constants.CENTRAL_VALUE;
+				}
+			}
+			if (data.length <= 2) {
+				out.println(String.valueOf(command1) + ";"
+						+ String.valueOf(dacValue1) + ";-;-");
+				byte[] byteStream = { command1, (byte) ';', (byte) dacValue1,
+						(byte) ';', (byte) '-', (byte) ';', (byte) '-' };
+				return byteStream.toString();
+			} else {
+				out.println(String.valueOf(command1) + ";"
+						+ String.valueOf(dacValue1) + ";"
+						+ String.valueOf(command2) + ";"
+						+ String.valueOf(dacValue2));
+				byte[] byteStream = { command1, (byte) ';', (byte) dacValue1,
+						(byte) ';', command2, (byte) ';', (byte) dacValue2 };
+				return byteStream.toString();
+			}
+		}
+		return joystickPosition;
 	}
 }
