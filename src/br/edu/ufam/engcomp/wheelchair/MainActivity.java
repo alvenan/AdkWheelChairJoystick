@@ -35,7 +35,7 @@ public class MainActivity extends AdkActivity {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				joystick.drawStick(event);
-				buttonPosition.setText(joystick.positionToByte(event));
+				buttonPosition.setText(joystick.getPositionInByte(event));
 				return true;
 			}
 		};
