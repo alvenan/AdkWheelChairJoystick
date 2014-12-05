@@ -7,12 +7,12 @@ import android.view.View.OnTouchListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import br.edu.ufam.engcomp.wheelchair.adk.AdkActivity;
-import br.edu.ufam.engcomp.wheelchair.joystick.JoyStickComponent;
+import br.edu.ufam.engcomp.wheelchair.joystick.JoystickComponent;
 
 public class MainActivity extends AdkActivity {
 
 	private RelativeLayout joystickLayout;
-	private JoyStickComponent joystick;
+	private JoystickComponent joystick;
 	private TextView buttonPosition;
 
 	@Override
@@ -22,11 +22,10 @@ public class MainActivity extends AdkActivity {
 		buttonPosition = (TextView) findViewById(R.id.position);
 		joystickLayout = (RelativeLayout) findViewById(R.id.joystick_layout);
 
-		joystick = new JoyStickComponent(getApplicationContext(),
+		joystick = new JoystickComponent(getApplicationContext(),
 				joystickLayout, R.drawable.joystick_button);
 		joystick.setJoystickParams();
-		buttonPosition.setText(joystick.getJoystickPosition());
-
+		
 		joystickLayout.setOnTouchListener(onTouchJoystickListener());
 
 	}
@@ -36,7 +35,7 @@ public class MainActivity extends AdkActivity {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				joystick.drawStick(event);
-				buttonPosition.setText(joystick.getJoystickPosition(event));
+				buttonPosition.setText(joystick.positionToByte(event));
 				return true;
 			}
 		};
