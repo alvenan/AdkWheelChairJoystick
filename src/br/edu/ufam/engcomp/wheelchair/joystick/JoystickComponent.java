@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path.Direction;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -401,15 +401,18 @@ public class JoystickComponent {
 		return getJoystickPosition();
 	}
 
-	public String positionToByte(MotionEvent event) {
+	public String getPositionInByte(MotionEvent event) {
 		String joystickPosition = getJoystickPosition(event);
 
 		if ((joystickPosition != null) && (!joystickPosition.isEmpty())) {
 			joystickPosition = joystickPosition.trim();
 			String[] data = joystickPosition.split("-");
-			byte command1 = 0x20;
-			byte command2 = 0x20;
-			int power1 = 0, power2 = 0, dacValue1 = 152, dacValue2 = 152;
+			byte command1 = Constants.PATTERN_COMMAND_VALUE;
+			byte command2 = Constants.PATTERN_COMMAND_VALUE;
+			int power1 = 0, power2 = 0;
+			int dacValue1 = Constants.PATTERN_DAC_VALUE;
+			int dacValue2 = Constants.PATTERN_DAC_VALUE;
+			
 			EnumDirection direction1 = EnumDirection.valueOf(data[0].trim());
 
 			power1 = Integer.parseInt(data[1].replace('%', ' ').trim());
@@ -422,7 +425,7 @@ public class JoystickComponent {
 			case DOWN:
 				command1 = 0x62; // 'b'
 				dacValue1 = Constants.CENTRAL_VALUE
-						+ (-power1 * Constants.DOWN_VALUE);
+						+ (-(power1) * Constants.DOWN_VALUE);
 				break;
 			case LEFT:
 				command1 = 0x6C; // 'l'
@@ -432,7 +435,7 @@ public class JoystickComponent {
 			case RIGHT:
 				command1 = 0x72; // 'r'
 				dacValue1 = Constants.CENTRAL_VALUE
-						+ (-power1 * Constants.RIGHT_VALUE);
+						+ (-(power1) * Constants.RIGHT_VALUE);
 				break;
 			case CENTER:
 			default:
@@ -452,7 +455,7 @@ public class JoystickComponent {
 				case DOWN:
 					command2 = 0x62; // 'b'
 					dacValue2 = Constants.CENTRAL_VALUE
-							+ (-power2 * Constants.DOWN_VALUE);
+							+ (-(power2) * Constants.DOWN_VALUE);
 					break;
 				case LEFT:
 					command2 = 0x6C; // 'l'
@@ -462,7 +465,7 @@ public class JoystickComponent {
 				case RIGHT:
 					command2 = 0x72; // 'r'
 					dacValue2 = Constants.CENTRAL_VALUE
-							+ (-power2 * Constants.RIGHT_VALUE);
+							+ (-(power2) * Constants.RIGHT_VALUE);
 					break;
 				case CENTER:
 				default:
@@ -471,19 +474,25 @@ public class JoystickComponent {
 				}
 			}
 			if (data.length <= 2) {
-				out.println(String.valueOf(command1) + ";"
-						+ String.valueOf(dacValue1) + ";-;-");
-				byte[] byteStream = { command1, (byte) ';', (byte) dacValue1,
+				Log.i("###", "POWER1=" + power1);
+				Log.i("###",
+						String.valueOf(command1) + ";"
+								+ String.valueOf(dacValue1) + ";-;-");
+
+				byte[] byteCommand = { command1, (byte) ';', (byte) dacValue1,
 						(byte) ';', (byte) '-', (byte) ';', (byte) '-' };
-				return byteStream.toString();
+				return byteCommand.toString();
 			} else {
-				out.println(String.valueOf(command1) + ";"
-						+ String.valueOf(dacValue1) + ";"
-						+ String.valueOf(command2) + ";"
-						+ String.valueOf(dacValue2));
-				byte[] byteStream = { command1, (byte) ';', (byte) dacValue1,
+				Log.i("###", "POWER1=" + power1 + " | POWER2=" + power2);
+				Log.i("###",
+						String.valueOf(command1) + ";"
+								+ String.valueOf(dacValue1) + ";"
+								+ String.valueOf(command2) + ";"
+								+ String.valueOf(dacValue2));
+
+				byte[] byteCommand = { command1, (byte) ';', (byte) dacValue1,
 						(byte) ';', command2, (byte) ';', (byte) dacValue2 };
-				return byteStream.toString();
+				return byteCommand.toString();
 			}
 		}
 		return joystickPosition;

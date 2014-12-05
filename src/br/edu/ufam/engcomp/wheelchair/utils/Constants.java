@@ -24,6 +24,8 @@ public class Constants {
     public static final int DOWN_VALUE = 9/100;
     public static final int RIGHT_VALUE = 9/100;
     public static final int LEFT_VALUE = 98/100;
+    public static final byte PATTERN_COMMAND_VALUE = 0x20;
+    public static final int PATTERN_DAC_VALUE = 152;
 	
 	public static final int RQS_USB_PERMISSION = 0;
 	public static final String ACTION_USB_PERMISSION = "arduino-er.usb_permission";
