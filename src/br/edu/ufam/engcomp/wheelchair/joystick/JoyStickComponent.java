@@ -15,7 +15,7 @@ public class JoyStickComponent {
 
 	private int mStickAlpha;
 	private int mLayoutAlpha;
-	private int OFFSET;
+	private int mOffset;
 
 	private ViewGroup mLayout;
 	private LayoutParams mLayoutParams;
@@ -58,20 +58,20 @@ public class JoyStickComponent {
 		mAngle = (float) cal_angle(mPositionX, mPositionY);
 
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			if (mDistance <= (mLayoutParams.width / 2) - OFFSET) {
+			if (mDistance <= (mLayoutParams.width / 2) - mOffset) {
 				mDraw.position(event.getX(), event.getY());
 				draw();
 				mTouchState = true;
 			}
 		} else if (event.getAction() == MotionEvent.ACTION_MOVE && mTouchState) {
-			if (mDistance <= (mLayoutParams.width / 2) - OFFSET) {
+			if (mDistance <= (mLayoutParams.width / 2) - mOffset) {
 				mDraw.position(event.getX(), event.getY());
 				draw();
-			} else if (mDistance > (mLayoutParams.width / 2) - OFFSET) {
+			} else if (mDistance > (mLayoutParams.width / 2) - mOffset) {
 				float x = (float) (Math.cos(Math.toRadians(cal_angle(
-						mPositionX, mPositionY))) * ((mLayoutParams.width / 2) - OFFSET));
+						mPositionX, mPositionY))) * ((mLayoutParams.width / 2) - mOffset));
 				float y = (float) (Math.sin(Math.toRadians(cal_angle(
-						mPositionX, mPositionY))) * ((mLayoutParams.height / 2) - OFFSET));
+						mPositionX, mPositionY))) * ((mLayoutParams.height / 2) - mOffset));
 				x += (mLayoutParams.width / 2);
 				y += (mLayoutParams.height / 2);
 				mDraw.position(x, y);
@@ -193,11 +193,11 @@ public class JoyStickComponent {
 	}
 
 	public void setOffset(int offset) {
-		OFFSET = offset;
+		mOffset = offset;
 	}
 
 	public int getOffset() {
-		return OFFSET;
+		return mOffset;
 	}
 
 	public void setStickAlpha(int alpha) {
@@ -298,5 +298,96 @@ public class JoyStickComponent {
 		this.setStickAlpha(Constants.STICK_ALPHA);
 		this.setOffset(Constants.OFFSET);
 		this.setMinimumDistance(Constants.MIN_DISTANCE);
+	}
+
+	public String getJoystickPosition() {
+		return "CENTER - 0";
+	}
+
+	public String getJoystickPosition(MotionEvent event) {
+		if (event.getAction() == MotionEvent.ACTION_DOWN
+				|| event.getAction() == MotionEvent.ACTION_MOVE) {
+			int direction = this.get8Direction();
+			if (direction == Constants.STICK_UP) {
+				if (this.getY() <= -200) {
+					return "UP - 100%";
+				} else {
+					return "UP - " + (-this.getY() / 2) + "%";
+				}
+			}
+			if (direction == Constants.STICK_RIGHT) {
+				if (this.getX() >= 200) {
+					return "RIGHT - 100%";
+				} else {
+					return "RIGHT - " + this.getX() / 2 + "%";
+				}
+			}
+			if (direction == Constants.STICK_DOWN) {
+				if (this.getY() >= 200) {
+					return "DOWN - 100%";
+				} else {
+					return "DOWN - " + this.getY() / 2 + "%";
+				}
+			}
+			if (direction == Constants.STICK_LEFT) {
+				if (this.getX() <= -200) {
+					return "LEFT - 100%";
+				} else {
+					return "LEFT - " + (-this.getX() / 2) + "%";
+				}
+			}
+			if (direction == Constants.STICK_UPRIGHT) {
+				if ((this.getY() > -200) && (this.getX1() >= 200)) {
+					return "UP - " + (-this.getY1() / 2) + "% - RIGHT - 100%";
+				}
+				if ((this.getY1() <= -200) && (this.getX1() < 200)) {
+					return "UP - 100%" + " - RIGHT - " + this.getX1() / 2 + "%";
+				} else {
+					return "UP - " + (-this.getY1() / 2) + "% - " + "RIGHT - "
+							+ this.getX1() / 2 + "%";
+
+				}
+			}
+			if (direction == Constants.STICK_DOWNRIGHT) {
+				if ((this.getY1() < 200) && (this.getX1() >= 200)) {
+					return "DOWN - " + (this.getY1() / 2) + "% - RIGHT - 100%";
+				}
+				if ((this.getY1() >= 200) && (this.getX1() < 200)) {
+					return "DOWN - 100%" + " - RIGHT - " + this.getX1() / 2
+							+ "%";
+				} else {
+					return "DOWN - " + this.getY1() / 2 + "% - " + "RIGHT - "
+							+ this.getX1() / 2 + "%";
+				}
+			}
+			if (direction == Constants.STICK_DOWNLEFT) {
+				if ((this.getY1() < 200) && (this.getX1() <= -200)) {
+					return "DOWN - " + this.getY1() / 2 + "% - LEFT - 100%";
+				}
+				if ((this.getY1() >= 200) && (this.getX1() > -200)) {
+					return "DOWN - 100% - LEFT - " + (-this.getX1() / 2) + "%";
+				} else {
+					return "DOWN - " + this.getY1() / 2 + "% - " + "LEFT - "
+							+ (-this.getX1() / 2) + "%";
+				}
+			}
+			if (direction == Constants.STICK_UPLEFT) {
+				if ((this.getY1() > -200) && (this.getX1() <= -200)) {
+					return "UP - " + (-this.getY1() / 2) + "% - LEFT - 100%";
+				}
+				if ((this.getY1() <= -200) && (this.getX1() > -200)) {
+					return "UP - 100%" + " - LEFT - " + (-this.getX1() / 2)
+							+ "%";
+				} else {
+					return "UP - " + (-this.getY1() / 2) + "% - " + "LEFT - "
+							+ (-this.getX1() / 2) + "%";
+				}
+			}
+			if (direction == Constants.STICK_NONE) {
+				return getJoystickPosition();
+			}
+		}
+		return getJoystickPosition();
+
 	}
 }
