@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,181 +13,182 @@ import br.edu.ufam.engcomp.wheelchair.utils.Constants;
 
 public class JoyStickComponent {
 
-	private int stickAlpha;
-	private int layoutAlpha;
+	private int mStickAlpha;
+	private int mLayoutAlpha;
 	private int OFFSET;
 
 	private ViewGroup mLayout;
-	private LayoutParams layoutParams;
-	private int stick_width, stick_height;
+	private LayoutParams mLayoutParams;
+	private int mStick_width, mStick_height;
 
-	private int position_x, position_y, min_distance;
-	private float distance, angle;
+	private int mPositionX, mPositionY, mMinDistance;
+	private float mDistance, mAngle;
 
-	private DrawCanvas draw;
-	private Paint paint;
-	private Bitmap stick;
+	private DrawCanvas mDraw;
+	private Paint mPaint;
+	private Bitmap mStick;
 
-	private boolean touch_state = false;
+	private boolean mTouchState = false;
 
 	public JoyStickComponent(Context context, ViewGroup layout, int stick_res_id) {
 		mLayout = layout;
 
-		stick = BitmapFactory.decodeResource(context.getResources(),
+		mStick = BitmapFactory.decodeResource(context.getResources(),
 				stick_res_id);
 
-		layoutParams = mLayout.getLayoutParams();
+		mLayoutParams = mLayout.getLayoutParams();
 
-		stick_width = stick.getWidth();
-		stick_height = stick.getHeight();
+		mStick_width = mStick.getWidth();
+		mStick_height = mStick.getHeight();
 
-		draw = new DrawCanvas(context);
-		paint = new Paint();
+		mDraw = new DrawCanvas(context);
+		mPaint = new Paint();
 	}
 
 	public void drawStick() {
-		draw.position(layoutParams.width / 2, layoutParams.height / 2);
+		mDraw.position(mLayoutParams.width / 2, mLayoutParams.height / 2);
 		draw();
 	}
 
 	public void drawStick(MotionEvent event) {
-		position_x = (int) (event.getX() - (layoutParams.width / 2));
-		position_y = (int) (event.getY() - (layoutParams.height / 2));
-		distance = (float) Math.sqrt(Math.pow(position_x, 2)
-				+ Math.pow(position_y, 2));
-		angle = (float) cal_angle(position_x, position_y);
+		mPositionX = (int) (event.getX() - (mLayoutParams.width / 2));
+		mPositionY = (int) (event.getY() - (mLayoutParams.height / 2));
+		mDistance = (float) Math.sqrt(Math.pow(mPositionX, 2)
+				+ Math.pow(mPositionY, 2));
+		mAngle = (float) cal_angle(mPositionX, mPositionY);
 
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			if (distance <= (layoutParams.width / 2) - OFFSET) {
-				draw.position(event.getX(), event.getY());
+			if (mDistance <= (mLayoutParams.width / 2) - OFFSET) {
+				mDraw.position(event.getX(), event.getY());
 				draw();
-				touch_state = true;
+				mTouchState = true;
 			}
-		} else if (event.getAction() == MotionEvent.ACTION_MOVE && touch_state) {
-			if (distance <= (layoutParams.width / 2) - OFFSET) {
-				draw.position(event.getX(), event.getY());
+		} else if (event.getAction() == MotionEvent.ACTION_MOVE && mTouchState) {
+			if (mDistance <= (mLayoutParams.width / 2) - OFFSET) {
+				mDraw.position(event.getX(), event.getY());
 				draw();
-			} else if (distance > (layoutParams.width / 2) - OFFSET) {
+			} else if (mDistance > (mLayoutParams.width / 2) - OFFSET) {
 				float x = (float) (Math.cos(Math.toRadians(cal_angle(
-						position_x, position_y))) * ((layoutParams.width / 2) - OFFSET));
+						mPositionX, mPositionY))) * ((mLayoutParams.width / 2) - OFFSET));
 				float y = (float) (Math.sin(Math.toRadians(cal_angle(
-						position_x, position_y))) * ((layoutParams.height / 2) - OFFSET));
-				x += (layoutParams.width / 2);
-				y += (layoutParams.height / 2);
-				draw.position(x, y);
+						mPositionX, mPositionY))) * ((mLayoutParams.height / 2) - OFFSET));
+				x += (mLayoutParams.width / 2);
+				y += (mLayoutParams.height / 2);
+				mDraw.position(x, y);
 				draw();
 			} else {
-				mLayout.removeView(draw);
+				mLayout.removeView(mDraw);
 			}
 		} else if (event.getAction() == MotionEvent.ACTION_UP) {
-			draw.position(layoutParams.width / 2, layoutParams.height / 2);
+			mDraw.position(mLayoutParams.width / 2, mLayoutParams.height / 2);
 			draw();
-			touch_state = false;
+			mTouchState = false;
 		}
 	}
 
 	public int[] getPosition() {
-		if (distance > min_distance && touch_state) {
-			return new int[] { position_x, position_y };
+		if (mDistance > mMinDistance && mTouchState) {
+			return new int[] { mPositionX, mPositionY };
 		}
 		return new int[] { 0, 0 };
 	}
 
 	public int getX() {
-		if (distance > min_distance && touch_state) {
-			return position_x;
+		if (mDistance > mMinDistance && mTouchState) {
+			return mPositionX;
 		}
 		return 0;
 	}
 
 	public int getX1() {
-		if (distance > min_distance && touch_state) {
-			if (distance >= Constants.LAYOUT_BORDER) {
-				distance = Constants.LAYOUT_BORDER;
+		if (mDistance > mMinDistance && mTouchState) {
+			if (mDistance >= Constants.LAYOUT_BORDER) {
+				mDistance = Constants.LAYOUT_BORDER;
 			}
-			return (int) (distance * (Math.cos(Math.toRadians(getAngle()))));
+			return (int) (mDistance * (Math.cos(Math.toRadians(getAngle()))));
 		}
 		return 0;
 	}
 
 	public int getY() {
-		if (distance > min_distance && touch_state) {
-			return position_y;
+		if (mDistance > mMinDistance && mTouchState) {
+			return mPositionY;
 		}
 		return 0;
 	}
 
 	public int getY1() {
-		if (distance > min_distance && touch_state) {
-			if (distance >= Constants.LAYOUT_BORDER) {
-				distance = Constants.LAYOUT_BORDER;
+		if (mDistance > mMinDistance && mTouchState) {
+			if (mDistance >= Constants.LAYOUT_BORDER) {
+				mDistance = Constants.LAYOUT_BORDER;
 			}
-			return (int) (distance * (Math.sin(Math.toRadians(getAngle()))));
+			return (int) (mDistance * (Math.sin(Math.toRadians(getAngle()))));
 		}
 		return 0;
 	}
 
 	public double getAngle() {
-		if (distance > min_distance && touch_state) {
-			return angle;
+		if (mDistance > mMinDistance && mTouchState) {
+			return mAngle;
 		}
 		return 0;
 	}
 
 	public float getDistance() {
-		if (distance > min_distance && touch_state) {
-			return distance;
+		if (mDistance > mMinDistance && mTouchState) {
+			return mDistance;
 		}
 		return 0;
 	}
 
 	public void setMinimumDistance(int minDistance) {
-		min_distance = minDistance;
+		mMinDistance = minDistance;
 	}
 
 	public int getMinimumDistance() {
-		return min_distance;
+		return mMinDistance;
 	}
 
 	public int get8Direction() {
-		if (distance > min_distance && touch_state) {
-			if (angle >= 247.5 && angle < 292.5) {
+		if (mDistance > mMinDistance && mTouchState) {
+			if (mAngle >= 247.5 && mAngle < 292.5)
 				return Constants.STICK_UP;
-			} else if (angle >= 292.5 && angle < 337.5) {
+			if (mAngle >= 292.5 && mAngle < 337.5)
 				return Constants.STICK_UPRIGHT;
-			} else if (angle >= 337.5 || angle < 22.5) {
+			if (mAngle >= 337.5 || mAngle < 22.5)
 				return Constants.STICK_RIGHT;
-			} else if (angle >= 22.5 && angle < 67.5) {
+			if (mAngle >= 22.5 && mAngle < 67.5)
 				return Constants.STICK_DOWNRIGHT;
-			} else if (angle >= 67.5 && angle < 112.5) {
+			if (mAngle >= 67.5 && mAngle < 112.5)
 				return Constants.STICK_DOWN;
-			} else if (angle >= 112.5 && angle < 157.5) {
+			if (mAngle >= 112.5 && mAngle < 157.5)
 				return Constants.STICK_DOWNLEFT;
-			} else if (angle >= 157.5 && angle < 202.5) {
+			if (mAngle >= 157.5 && mAngle < 202.5)
 				return Constants.STICK_LEFT;
-			} else if (angle >= 202.5 && angle < 247.5) {
+			if (mAngle >= 202.5 && mAngle < 247.5)
 				return Constants.STICK_UPLEFT;
-			}
-		} else if (distance <= min_distance && touch_state) {
-			return Constants.STICK_NONE;
+
 		}
+		if (mDistance <= mMinDistance && mTouchState)
+			return Constants.STICK_NONE;
+
 		return 0;
 	}
 
 	public int get4Direction() {
-		if (distance > min_distance && touch_state) {
-			if (angle >= 225 && angle < 315) {
+		if (mDistance > mMinDistance && mTouchState) {
+			if (mAngle >= 225 && mAngle < 315)
 				return Constants.STICK_UP;
-			} else if (angle >= 315 || angle < 45) {
+			if (mAngle >= 315 || mAngle < 45)
 				return Constants.STICK_RIGHT;
-			} else if (angle >= 45 && angle < 135) {
+			if (mAngle >= 45 && mAngle < 135)
 				return Constants.STICK_DOWN;
-			} else if (angle >= 135 && angle < 225) {
+			if (mAngle >= 135 && mAngle < 225)
 				return Constants.STICK_LEFT;
-			}
-		} else if (distance <= min_distance && touch_state) {
-			return Constants.STICK_NONE;
 		}
+		if (mDistance <= mMinDistance && mTouchState)
+			return Constants.STICK_NONE;
+
 		return 0;
 	}
 
@@ -201,58 +201,58 @@ public class JoyStickComponent {
 	}
 
 	public void setStickAlpha(int alpha) {
-		stickAlpha = alpha;
-		paint.setAlpha(alpha);
+		mStickAlpha = alpha;
+		mPaint.setAlpha(alpha);
 	}
 
 	public int getStickAlpha() {
-		return stickAlpha;
+		return mStickAlpha;
 	}
 
 	public void setLayoutAlpha(int alpha) {
-		layoutAlpha = alpha;
+		mLayoutAlpha = alpha;
 		mLayout.getBackground().setAlpha(alpha);
 	}
 
 	public int getLayoutAlpha() {
-		return layoutAlpha;
+		return mLayoutAlpha;
 	}
 
 	public void setStickSize(int width, int height) {
-		stick = Bitmap.createScaledBitmap(stick, width, height, false);
-		stick_width = stick.getWidth();
-		stick_height = stick.getHeight();
+		mStick = Bitmap.createScaledBitmap(mStick, width, height, false);
+		mStick_width = mStick.getWidth();
+		mStick_height = mStick.getHeight();
 	}
 
 	public void setStickWidth(int width) {
-		stick = Bitmap.createScaledBitmap(stick, width, stick_height, false);
-		stick_width = stick.getWidth();
+		mStick = Bitmap.createScaledBitmap(mStick, width, mStick_height, false);
+		mStick_width = mStick.getWidth();
 	}
 
 	public void setStickHeight(int height) {
-		stick = Bitmap.createScaledBitmap(stick, stick_width, height, false);
-		stick_height = stick.getHeight();
+		mStick = Bitmap.createScaledBitmap(mStick, mStick_width, height, false);
+		mStick_height = mStick.getHeight();
 	}
 
 	public int getStickWidth() {
-		return stick_width;
+		return mStick_width;
 	}
 
 	public int getStickHeight() {
-		return stick_height;
+		return mStick_height;
 	}
 
 	public void setLayoutSize(int width, int height) {
-		layoutParams.width = width;
-		layoutParams.height = height;
+		mLayoutParams.width = width;
+		mLayoutParams.height = height;
 	}
 
 	public int getLayoutWidth() {
-		return layoutParams.width;
+		return mLayoutParams.width;
 	}
 
 	public int getLayoutHeight() {
-		return layoutParams.height;
+		return mLayoutParams.height;
 	}
 
 	private double cal_angle(float x, float y) {
@@ -269,10 +269,10 @@ public class JoyStickComponent {
 
 	private void draw() {
 		try {
-			mLayout.removeView(draw);
+			mLayout.removeView(mDraw);
 		} catch (Exception e) {
 		}
-		mLayout.addView(draw);
+		mLayout.addView(mDraw);
 	}
 
 	private class DrawCanvas extends View {
@@ -283,12 +283,12 @@ public class JoyStickComponent {
 		}
 
 		public void onDraw(Canvas canvas) {
-			canvas.drawBitmap(stick, x, y, paint);
+			canvas.drawBitmap(mStick, x, y, mPaint);
 		}
 
 		private void position(float pos_x, float pos_y) {
-			x = pos_x - (stick_width / 2);
-			y = pos_y - (stick_height / 2);
+			x = pos_x - (mStick_width / 2);
+			y = pos_y - (mStick_height / 2);
 		}
 	}
 
