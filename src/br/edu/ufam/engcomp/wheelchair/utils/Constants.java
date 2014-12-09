@@ -10,6 +10,14 @@ public class Constants {
 	public static final int STICK_DOWNLEFT = 6;
 	public static final int STICK_LEFT = 7;
 	public static final int STICK_UPLEFT = 8;
+	
+	public static final String CENTER_POSITION = "CENTER - 0";
+	
+	public static final byte COMMAND_UP = 0x66;	
+	public static final byte COMMAND_DOWN = 0x62;	
+	public static final byte COMMAND_LEFT = 0x6C;	
+	public static final byte COMMAND_RIGHT = 0x72;	
+	public static final byte COMMAND_CENTER = 0x30;
 
 	public static final int LAYOUT_BORDER = 200;
 	public static final int STICK_ALPHA = 100;
@@ -21,10 +29,6 @@ public class Constants {
 	public static final int A_HUNDRED_PERCENT = 100;
 
 	public static final int CENTRAL_VALUE = 152;
-	public static final int UP_VALUE = 98 / 100;
-	public static final int DOWN_VALUE = 9 / 100;
-	public static final int RIGHT_VALUE = 9 / 100;
-	public static final int LEFT_VALUE = 98 / 100;
 	public static final byte PATTERN_COMMAND_VALUE = 0x20;
 	public static final int PATTERN_DAC_VALUE = 152;
 

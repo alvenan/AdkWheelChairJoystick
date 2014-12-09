@@ -306,10 +306,6 @@ public class JoystickComponent {
 		this.setMinimumDistance(Constants.MIN_DISTANCE);
 	}
 
-	public String getJoystickPosition() {
-		return "CENTER - 0";
-	}
-
 	private String getJoystickPosition(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN
 				|| event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -404,106 +400,62 @@ public class JoystickComponent {
 				}
 			}
 			if (direction == Constants.STICK_NONE) {
-				return getJoystickPosition();
+				return "CENTER - 0";
 			}
 		}
-		return getJoystickPosition();
+		return "CENTER - 0";
 	}
 
-	public String getPositionInByte(MotionEvent event) {
+	public String getJoystickPositionInByte(MotionEvent event) {
 		String joystickPosition = getJoystickPosition(event);
+		byte[] byteCommand = { (byte) '-', (byte) ';', (byte) '-', (byte) ';',
+				(byte) '-', (byte) ';', (byte) '-' };
+
+		// String[] byteCommand = { "-", ";", "-", ";", "-", ";", "-" };
 
 		if ((joystickPosition != null) && (!joystickPosition.isEmpty())) {
 			joystickPosition = joystickPosition.trim();
 			String[] data = joystickPosition.split("-");
-			byte command1 = Constants.PATTERN_COMMAND_VALUE;
-			byte command2 = Constants.PATTERN_COMMAND_VALUE;
-			int power1 = 0, power2 = 0;
-			int dacValue1 = Constants.PATTERN_DAC_VALUE;
-			int dacValue2 = Constants.PATTERN_DAC_VALUE;
 
-			EnumDirection direction1 = EnumDirection.valueOf(data[0].trim());
-
-			power1 = Integer.parseInt(data[1].replace('%', ' ').trim());
-			switch (direction1) {
-			case UP:
-				command1 = 0x66; // 'f'
-				dacValue1 = Constants.CENTRAL_VALUE
-						+ (power1 * Constants.UP_VALUE);
-				break;
-			case DOWN:
-				command1 = 0x62; // 'b'
-				dacValue1 = Constants.CENTRAL_VALUE
-						+ (-(power1) * Constants.DOWN_VALUE);
-				break;
-			case LEFT:
-				command1 = 0x6C; // 'l'
-				dacValue1 = Constants.CENTRAL_VALUE
-						+ (power1 * Constants.LEFT_VALUE);
-				break;
-			case RIGHT:
-				command1 = 0x72; // 'r'
-				dacValue1 = Constants.CENTRAL_VALUE
-						+ (-(power1) * Constants.RIGHT_VALUE);
-				break;
-			case CENTER:
-			default:
-				command1 = 0x30; // '0'
-				dacValue1 = Constants.CENTRAL_VALUE;
-			}
-			if (data.length > 2) {
-				EnumDirection direction2 = EnumDirection
-						.valueOf(data[2].trim());
-				power2 = Integer.parseInt(data[3].replace('%', ' ').trim());
-				switch (direction2) {
+			byte[] command = { Constants.PATTERN_COMMAND_VALUE,
+					Constants.PATTERN_COMMAND_VALUE };
+			int[] power = { 0, 0 };
+			int[] dacValue = { Constants.PATTERN_DAC_VALUE,
+					Constants.PATTERN_DAC_VALUE };
+			for (int i = 0, j = 0, k = 0; i < data.length; i += 2, j++, k += 4) {
+				EnumDirection direction = EnumDirection.valueOf(data[i].trim());
+				power[j] = Integer.parseInt(data[i + 1].replace('%', ' ')
+						.trim());
+				switch (direction) {
 				case UP:
-					command2 = 0x66; // 'f'
-					dacValue2 = Constants.CENTRAL_VALUE
-							+ (power2 * Constants.UP_VALUE);
+					command[j] = Constants.COMMAND_UP; // 'f'
+					dacValue[j] = (int) (Constants.CENTRAL_VALUE + (power[j] * 98 / 100));
 					break;
 				case DOWN:
-					command2 = 0x62; // 'b'
-					dacValue2 = Constants.CENTRAL_VALUE
-							+ (-(power2) * Constants.DOWN_VALUE);
+					command[j] = Constants.COMMAND_DOWN; // 'b'
+					dacValue[j] = (int) (Constants.CENTRAL_VALUE - (power[j] * 9 / 10));
 					break;
 				case LEFT:
-					command2 = 0x6C; // 'l'
-					dacValue2 = Constants.CENTRAL_VALUE
-							+ (power2 * Constants.LEFT_VALUE);
+					command[j] = Constants.COMMAND_LEFT; // 'l'
+					dacValue[j] = (int) (Constants.CENTRAL_VALUE + (power[j] * 98 / 100));
 					break;
 				case RIGHT:
-					command2 = 0x72; // 'r'
-					dacValue2 = Constants.CENTRAL_VALUE
-							+ (-(power2) * Constants.RIGHT_VALUE);
+					command[j] = Constants.COMMAND_RIGHT; // 'r'
+					dacValue[j] = (int) (Constants.CENTRAL_VALUE - (power[j] * 9 / 10));
 					break;
 				case CENTER:
 				default:
-					command2 = 0x30; // '0'
-					dacValue2 = Constants.CENTRAL_VALUE;
+					command[j] = Constants.COMMAND_CENTER; // '0'
+					dacValue[j] = Constants.CENTRAL_VALUE;
 				}
+				byteCommand[k] = command[j];
+				byteCommand[k + 2] = (byte) dacValue[j];
+				// byteCommand[k] = "" + command[j];
+				// byteCommand[k + 2] = "" + dacValue[j];
 			}
-			if (data.length <= 2) {
-				Log.i("###", "POWER1=" + power1);
-				Log.i("###",
-						String.valueOf(command1) + ";"
-								+ String.valueOf(dacValue1) + ";-;-");
 
-				byte[] byteCommand = { command1, (byte) ';', (byte) dacValue1,
-						(byte) ';', (byte) '-', (byte) ';', (byte) '-' };
-				return Arrays.toString(byteCommand);
-			} else {
-				Log.i("###", "POWER1=" + power1 + " | POWER2=" + power2);
-				Log.i("###",
-						String.valueOf(command1) + ";"
-								+ String.valueOf(dacValue1) + ";"
-								+ String.valueOf(command2) + ";"
-								+ String.valueOf(dacValue2));
-
-				byte[] byteCommand = { command1, (byte) ';', (byte) dacValue1,
-						(byte) ';', command2, (byte) ';', (byte) dacValue2 };
-				return Arrays.toString(byteCommand);
-			}
 		}
-		return joystickPosition;
+		return "Posição(byte): " + Arrays.toString(byteCommand)
+				+ " \nPosição(coord.): " + getJoystickPosition(event);
 	}
 }
