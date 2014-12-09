@@ -316,28 +316,28 @@ public class JoystickComponent {
 			int direction = this.get8Direction();
 			if (direction == Constants.STICK_UP) {
 				if (this.getY() <= -(Constants.LAYOUT_BORDER)) {
-					return "UP - 100%";
+					return "UP - " + Constants.A_HUNDRED_PERCENT + "%";
 				} else {
 					return "UP - " + (-this.getY() / 2) + "%";
 				}
 			}
 			if (direction == Constants.STICK_RIGHT) {
 				if (this.getX() >= Constants.LAYOUT_BORDER) {
-					return "RIGHT - 100%";
+					return "RIGHT - " + Constants.A_HUNDRED_PERCENT + "%";
 				} else {
 					return "RIGHT - " + this.getX() / 2 + "%";
 				}
 			}
 			if (direction == Constants.STICK_DOWN) {
 				if (this.getY() >= Constants.LAYOUT_BORDER) {
-					return "DOWN - 100%";
+					return "DOWN - " + Constants.A_HUNDRED_PERCENT + "%";
 				} else {
 					return "DOWN - " + this.getY() / 2 + "%";
 				}
 			}
 			if (direction == Constants.STICK_LEFT) {
 				if (this.getX() <= -(Constants.LAYOUT_BORDER)) {
-					return "LEFT - 100%";
+					return "LEFT - " + Constants.A_HUNDRED_PERCENT + "%";
 				} else {
 					return "LEFT - " + (-this.getX() / 2) + "%";
 				}
@@ -345,11 +345,13 @@ public class JoystickComponent {
 			if (direction == Constants.STICK_UPRIGHT) {
 				if ((this.getY() > -(Constants.LAYOUT_BORDER))
 						&& (this.getX1() >= Constants.LAYOUT_BORDER)) {
-					return "UP - " + (-this.getY1() / 2) + "% - RIGHT - 100%";
+					return "UP - " + (-this.getY1() / 2) + "% - RIGHT - "
+							+ Constants.A_HUNDRED_PERCENT + "%";
 				}
 				if ((this.getY1() <= -(Constants.LAYOUT_BORDER))
 						&& (this.getX1() < Constants.LAYOUT_BORDER)) {
-					return "UP - 100%" + " - RIGHT - " + this.getX1() / 2 + "%";
+					return "UP - " + Constants.A_HUNDRED_PERCENT + "%"
+							+ " - RIGHT - " + this.getX1() / 2 + "%";
 				} else {
 					return "UP - " + (-this.getY1() / 2) + "% - " + "RIGHT - "
 							+ this.getX1() / 2 + "%";
@@ -359,12 +361,13 @@ public class JoystickComponent {
 			if (direction == Constants.STICK_DOWNRIGHT) {
 				if ((this.getY1() < Constants.LAYOUT_BORDER)
 						&& (this.getX1() >= Constants.LAYOUT_BORDER)) {
-					return "DOWN - " + (this.getY1() / 2) + "% - RIGHT - 100%";
+					return "DOWN - " + (this.getY1() / 2) + "% - RIGHT - "
+							+ Constants.A_HUNDRED_PERCENT + "%";
 				}
 				if ((this.getY1() >= Constants.LAYOUT_BORDER)
 						&& (this.getX1() < Constants.LAYOUT_BORDER)) {
-					return "DOWN - 100%" + " - RIGHT - " + this.getX1() / 2
-							+ "%";
+					return "DOWN - " + Constants.A_HUNDRED_PERCENT + "%"
+							+ " - RIGHT - " + this.getX1() / 2 + "%";
 				} else {
 					return "DOWN - " + this.getY1() / 2 + "% - " + "RIGHT - "
 							+ this.getX1() / 2 + "%";
@@ -373,11 +376,13 @@ public class JoystickComponent {
 			if (direction == Constants.STICK_DOWNLEFT) {
 				if ((this.getY1() < Constants.LAYOUT_BORDER)
 						&& (this.getX1() <= -(Constants.LAYOUT_BORDER))) {
-					return "DOWN - " + this.getY1() / 2 + "% - LEFT - 100%";
+					return "DOWN - " + this.getY1() / 2 + "% - LEFT - "
+							+ Constants.A_HUNDRED_PERCENT + "%";
 				}
 				if ((this.getY1() >= Constants.LAYOUT_BORDER)
 						&& (this.getX1() > -(Constants.LAYOUT_BORDER))) {
-					return "DOWN - 100% - LEFT - " + (-this.getX1() / 2) + "%";
+					return "DOWN - " + Constants.A_HUNDRED_PERCENT
+							+ "% - LEFT - " + (-this.getX1() / 2) + "%";
 				} else {
 					return "DOWN - " + this.getY1() / 2 + "% - " + "LEFT - "
 							+ (-this.getX1() / 2) + "%";
@@ -386,12 +391,13 @@ public class JoystickComponent {
 			if (direction == Constants.STICK_UPLEFT) {
 				if ((this.getY1() > -(Constants.LAYOUT_BORDER))
 						&& (this.getX1() <= -(Constants.LAYOUT_BORDER))) {
-					return "UP - " + (-this.getY1() / 2) + "% - LEFT - 100%";
+					return "UP - " + (-this.getY1() / 2) + "% - LEFT - "
+							+ Constants.A_HUNDRED_PERCENT + "%";
 				}
 				if ((this.getY1() <= -(Constants.LAYOUT_BORDER))
 						&& (this.getX1() > -(Constants.LAYOUT_BORDER))) {
-					return "UP - 100%" + " - LEFT - " + (-this.getX1() / 2)
-							+ "%";
+					return "UP - " + Constants.A_HUNDRED_PERCENT + "%"
+							+ " - LEFT - " + (-this.getX1() / 2) + "%";
 				} else {
 					return "UP - " + (-this.getY1() / 2) + "% - " + "LEFT - "
 							+ (-this.getX1() / 2) + "%";
@@ -415,7 +421,7 @@ public class JoystickComponent {
 			int power1 = 0, power2 = 0;
 			int dacValue1 = Constants.PATTERN_DAC_VALUE;
 			int dacValue2 = Constants.PATTERN_DAC_VALUE;
-			
+
 			EnumDirection direction1 = EnumDirection.valueOf(data[0].trim());
 
 			power1 = Integer.parseInt(data[1].replace('%', ' ').trim());
