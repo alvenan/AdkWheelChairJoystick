@@ -1,6 +1,9 @@
 package br.edu.ufam.engcomp.wheelchair.joystick;
 
 import static java.lang.System.out;
+
+import java.util.Arrays;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -481,7 +484,7 @@ public class JoystickComponent {
 
 				byte[] byteCommand = { command1, (byte) ';', (byte) dacValue1,
 						(byte) ';', (byte) '-', (byte) ';', (byte) '-' };
-				return byteCommand.toString();
+				return Arrays.toString(byteCommand);
 			} else {
 				Log.i("###", "POWER1=" + power1 + " | POWER2=" + power2);
 				Log.i("###",
@@ -492,7 +495,7 @@ public class JoystickComponent {
 
 				byte[] byteCommand = { command1, (byte) ';', (byte) dacValue1,
 						(byte) ';', command2, (byte) ';', (byte) dacValue2 };
-				return byteCommand.toString();
+				return Arrays.toString(byteCommand);
 			}
 		}
 		return joystickPosition;
