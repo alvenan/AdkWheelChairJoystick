@@ -19,6 +19,7 @@ public class Constants {
 	public static final int STICK_WIDTH = 150;
 	public static final int STICK_HEIGHT = 150;
 	
+	public static final int A_HUNDRED_PERCENT = 100;
     public static final int CENTRAL_VALUE = 152;
     public static final int UP_VALUE = 98/100;
     public static final int DOWN_VALUE = 9/100;

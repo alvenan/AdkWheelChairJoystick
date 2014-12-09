@@ -11,8 +11,8 @@
 
     <RelativeLayout
         android:id="@+id/joystick_layout"
-        android:layout_width="500dp"
-        android:layout_height="500dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:background="@drawable/joystick_background" >
     </RelativeLayout>
 
