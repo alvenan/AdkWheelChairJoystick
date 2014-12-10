@@ -1,7 +1,5 @@
 package br.edu.ufam.engcomp.wheelchair.joystick;
 
-import static java.lang.System.out;
-
 import java.util.Arrays;
 
 import android.content.Context;
@@ -9,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
