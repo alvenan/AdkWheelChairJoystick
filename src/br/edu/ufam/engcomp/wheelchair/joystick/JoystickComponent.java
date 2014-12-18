@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -445,6 +446,8 @@ public class JoystickComponent {
 		    command[j] = Constants.COMMAND_CENTER; // '0'
 		    dacValue[j] = Constants.PATTERN_DAC_VALUE;
 		}
+		Log.i("###", "Power1: "+power[0]+" | Power2: "+power[1]);
+		Log.i("###", "DAC1: "+dacValue[0]+" | DAC2: "+dacValue[1]);
 		byteCommand[k] = command[j];
 		byteCommand[k + 2] = (byte) dacValue[j];
 	    }

@@ -112,6 +112,19 @@ public abstract class AbsAdkActivity extends Activity {
 	    }
 	}
     }
+    
+    // Write an Array of Bytes to Adk
+    public void WriteAdk(byte[] buffer) {
+
+	if (myAdkOutputStream != null) {
+
+	    try {
+		myAdkOutputStream.write(buffer);
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
+	}
+    }
 
     // Write a single byte to Adk
     void WriteByteAdk(byte oneByte) {

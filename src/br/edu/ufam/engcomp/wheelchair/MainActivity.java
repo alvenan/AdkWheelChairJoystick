@@ -39,6 +39,7 @@ public class MainActivity extends AbsAdkActivity {
 		joystick.drawStick(event);
 		buttonPosition.setText(Arrays.toString(joystick
 			.getJoystickPositionInByte(event)));
+		WriteAdk(joystick.getJoystickPositionInByte(event));
 		return true;
 	    }
 	};
