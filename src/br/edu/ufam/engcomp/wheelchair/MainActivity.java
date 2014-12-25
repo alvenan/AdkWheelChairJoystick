@@ -13,46 +13,48 @@ import br.edu.ufam.engcomp.wheelchair.joystick.JoystickComponent;
 
 public class MainActivity extends AbsAdkActivity {
 
-    private RelativeLayout joystickLayout;
-    private JoystickComponent joystick;
-    private TextView buttonPosition;
+	private RelativeLayout joystickLayout;
+	private JoystickComponent joystick;
+	private TextView buttonPosition;
 
-    @Override
-    protected void doOnCreate(Bundle savedInstanceState) {
-	setContentView(R.layout.activity_main);
+	private boolean enableLogcatDebug = true;
 
-	buttonPosition = (TextView) findViewById(R.id.position);
-	joystickLayout = (RelativeLayout) findViewById(R.id.joystick_layout);
+	@Override
+	protected void doOnCreate(Bundle savedInstanceState) {
+		setContentView(R.layout.activity_main);
 
-	joystick = new JoystickComponent(getApplicationContext(),
-		joystickLayout, R.drawable.joystick_button);
-	joystick.setJoystickParams();
+		buttonPosition = (TextView) findViewById(R.id.position);
+		joystickLayout = (RelativeLayout) findViewById(R.id.joystick_layout);
 
-	joystickLayout.setOnTouchListener(onTouchJoystickListener());
+		joystick = new JoystickComponent(getApplicationContext(),
+				joystickLayout, R.drawable.joystick_button);
 
-    }
+		joystickLayout.setOnTouchListener(onTouchJoystickListener());
 
-    public OnTouchListener onTouchJoystickListener() {
-	return new OnTouchListener() {
-	    @Override
-	    public boolean onTouch(View v, MotionEvent event) {
-		joystick.drawStick(event);
-		buttonPosition.setText(Arrays.toString(joystick
-			.getJoystickPositionInByte(event)));
-		WriteAdk(joystick.getJoystickPositionInByte(event));
-		return true;
-	    }
-	};
-    }
+	}
 
-    @Override
-    protected void onResume() {
-	super.onResume();
-	joystick.drawStick();
-    }
+	public OnTouchListener onTouchJoystickListener() {
+		return new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				joystick.drawStick(event);
+				buttonPosition.setText(Arrays.toString(joystick
+						.getJoystickPositionInByte(event, enableLogcatDebug)));
+				WriteAdk(joystick
+						.getJoystickPositionInByte(event, enableLogcatDebug));
+				return true;
+			}
+		};
+	}
 
-    @Override
-    protected void doAdkRead(String stringIn) {
-	// Read some information sent from the hardware
-    }
+	@Override
+	protected void onResume() {
+		super.onResume();
+		joystick.drawStick();
+	}
+
+	@Override
+	protected void doAdkRead(String stringIn) {
+		// Read some information sent from the accessory
+	}
 }
