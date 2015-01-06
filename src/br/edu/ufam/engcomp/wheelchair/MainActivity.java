@@ -1,7 +1,5 @@
 package br.edu.ufam.engcomp.wheelchair;
 
-import java.util.Arrays;
-
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,8 +36,8 @@ public class MainActivity extends AbsAdkActivity {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				joystick.drawStick(event);
-				buttonPosition.setText(Arrays.toString(joystick
-						.getJoystickPositionInByte(event, enableLogcatDebug)));
+//				buttonPosition.setText(Arrays.toString(joystick
+//						.getJoystickPositionInByte(event, enableLogcatDebug)));
 				WriteAdk(joystick
 						.getJoystickPositionInByte(event, enableLogcatDebug));
 				return true;
@@ -55,6 +53,6 @@ public class MainActivity extends AbsAdkActivity {
 
 	@Override
 	protected void doAdkRead(String stringIn) {
-		// Read some information sent from the accessory
+		buttonPosition.setText(stringIn);
 	}
 }
